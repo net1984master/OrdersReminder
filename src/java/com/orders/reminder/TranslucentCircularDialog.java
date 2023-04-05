@@ -7,17 +7,22 @@ import java.awt.geom.Ellipse2D;
 import java.io.*;
 import java.util.Properties;
 
+
+
+
 public class TranslucentCircularDialog extends JDialog {
     final private Integer countOrd;
     private JLabel label;
     private JPanel panel;
     private Integer X=null, Y=null;
     final private float opacity=0.75f;
-    final private Integer width=70,height=70;
+    final private Integer width,height;
     final Rectangle rectangle = GraphicsEnvironment.getLocalGraphicsEnvironment()
             .getDefaultScreenDevice().getDefaultConfiguration().getBounds();
 
-    public TranslucentCircularDialog(Integer countOrders,Boolean isAlarm) {
+    public TranslucentCircularDialog(Integer countOrders,Boolean isAlarm, Integer w,Integer h,Integer xShift,Integer yShift, Color backgroundColor, Color textColor) {
+        this.width = w;
+        this.height = h;
         countOrd=countOrders;
         setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
         addMouseListener(new TranslucentCircularDialogMListener());
@@ -39,7 +44,7 @@ public class TranslucentCircularDialog extends JDialog {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setAlwaysOnTop(true);
         getContentPane().setBackground(Color.red);
-        setLocation(X, Y);
+        setLocation(X + xShift, Y + yShift);
         checkPosition();
         if(isAlarm) {
             panel = new GradientPanel();
@@ -47,8 +52,8 @@ public class TranslucentCircularDialog extends JDialog {
         }else{
             label=new JLabel(countOrd.toString());
             label.setFont(new Font("Sherif",Font.BOLD,25));
-            label.setForeground(Color.WHITE);
-            panel = new Panel(Color.blue);
+            label.setForeground(textColor);
+            panel = new Panel(backgroundColor);
             setContentPane(panel);
             add(Box.createHorizontalGlue());
             add(label);
@@ -164,7 +169,7 @@ public class TranslucentCircularDialog extends JDialog {
         }
     }
     private void checkPosition(){
-        Boolean need_repaint=false;
+        boolean need_repaint=false;
         if(X<=0){
             X=0;
             need_repaint=true;
